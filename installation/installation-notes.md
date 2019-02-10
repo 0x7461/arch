@@ -65,7 +65,7 @@ Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 1. Configure pacman (*/etc/pacman.conf*)
 	* Use multillib repos: uncomment 2 lines of multillib repo
 	* `sudo pacman -Syy`
-        * `sudo pacman -S pacman-contrib`
+    * `sudo pacman -S pacman-contrib`
 	* Color in pacman : uncomment `Color` under *Misc options*
 	* `pacman -S reflector`
 	* `mkdir -p /etc/pacman.d/hooks/`
@@ -101,10 +101,10 @@ Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 	* (opt.) `rm -f /etc/pacman.d/mirrorlist.pacnew`
 3. Update system / `sudo pacman -Syu`
 4. AUR wrapper (*yay*)
-        * `pacman -S git`
+    * `pacman -S git`
 	* `cd /tmp`
 	* `git clone https://aur.archlinux.org/yay.git`
-        * Install *yay* with `makepkg`
+    * Install *yay* with `makepkg`
 5. X and i3
 	* `pacman -S xorg-server xorg-xinit xorg-xset xorg-xbacklight xautolock i3 dunst rxvt-unicode lxappearance`
 	* `sudo cp /etc/X11/xinit/xinitrc ~/.xinitrc`
@@ -120,7 +120,7 @@ Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 		```
 6. Other stuffs
 	* Needed: `pacman -S alsa-utils compton transmission-gtk feh vifm mpd mpc ncmpcpp mpv firefox gvfs xdg-user-dirs`
-        * `xdg-user-dirs-update`
+    * `xdg-user-dirs-update`
 	* Nedded (AUR) : `yay -S aic94xx-firmware wd719x-firmware google-chrome`
 	* GPU: `pacman -S nvidia bumblebee mesa nvidia xf86-video-intel lib32-virtualgl lib32-nvidia-utils mesa-demos bbswitch primus lib32-primus`
 		1. Add user to *bumblebee* group : `gpasswd -a ta bumblebee`
