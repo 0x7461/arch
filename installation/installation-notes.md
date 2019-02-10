@@ -7,22 +7,18 @@
 	* Else, go on
 2. Connect to the Internet
 	* `ping 8.8.8.8` to check
-	* Boadcom wireless/bluetooth card: Arch ISO has *broadcom-wl* bundled, try `ip link`, if wireless show up, use `wifi-menu <interface>` to connect to wifi;
+	* Try `ip link`, if wireless card show up, use `wifi-menu <interface>` to connect to a wifi;
 	* Else, use ethernet (`dhcpcd`) or USB Tethering on Android.
 3. Update clock / `timedatectl set-ntp true`
-4. Adjust some stuffs
-	* `pacman -Syy`
-	* Install *vim* and *terminus-font*
-	* `setfont ter-v14n`
-5. Disk partitioning / using *fdisk* to modify partition table
+4. Disk partitioning / using *fdisk* to modify partition table
     * *swap* : equals or lesser than 1/2 of RAM
-    * */boot* : 200MiB - 500MiB
-    * */root* : 25GiB - 50GiB
+    * */boot* : 500MiB
+    * */root* : 50GiB
     * */home* : rest of the disk
-6. Format partitions
+5. Format partitions
 	* For *boot, root, home* : `mkfs.ext4 <parttion>`
 	* For *swap* : `mkswap <parttion>`, then `swapon <parttion>`
-7. Mount the file systems
+6. Mount the file systems
 	* mount *root* to */mnt*
 	* create *boot* and *home* on */mnt* (use *mkdir*)
 	* mount *boot* and *home* arccordingly to theirs mountpoints on */mnt*
@@ -33,7 +29,7 @@
 
 Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 
-2. pacstrap / `pacstrap /mnt base base-devel vim`
+2. pacstrap / `pacstrap /mnt base sudo vim`
 
 ## Configure system
 1. Fstab
@@ -45,7 +41,7 @@ Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 	* Sync: `hwclock --systohc`
 4. Locale
 	* Uncomment <i>en_US.UTF-8 UTF-8</i> in */etc/locale.gen*, then `locale-gen`
-	* Edit */etc/locale.conf* file, add `LANG=en_US.UTF-8` to the end of that file
+	* `echo LANG=en_US.UTF-8 >> /etc/locale.conf`
 5. Hostname
 	* Create */etc/hostname* file with host's name (*mmcdxx*)
 	* Edit */etc/hosts* arccordingly if needed
@@ -53,13 +49,13 @@ Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 7. Initramfs (opt.) / `mkinitcpio -p linux`
 8. Change root password / `passwd`
 9. Add a normal user
-	* `usermod -m -g users -G wheel,storage,power -s /bin/bash/ ta`
+	* `usermod -m -g users -G wheel,storage,power,audio,video -s /bin/bash ta`
 	* `passwd ta`
 10. Boot loader
 	* `pacman -S intel-ucode ntfs-3g os-prober grub`
 	* `grub-install /dev/sda/`
 	* `grub-mkconfig -o /boot/grub/grub.cfg`
-11. Fonts / `pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-inconsolata terminus-font`
+11. Fonts / `pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-inconsolata`
 12. Reboot
 	* `exit`
 	* `umount -R /mnt`
@@ -69,8 +65,8 @@ Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 1. Configure pacman (*/etc/pacman.conf*)
 	* Use multillib repos: uncomment 2 lines of multillib repo
 	* `sudo pacman -Syy`
+        * `sudo pacman -S pacman-contrib`
 	* Color in pacman : uncomment `Color` under *Misc options*
-	* Pacman in pacman : add `ILoveCandy` under *Misc options*
 	* `pacman -S reflector`
 	* `mkdir -p /etc/pacman.d/hooks/`
 	* `vim /etc/pacman.d/hooks/mirrorupgrade.hook`
@@ -104,12 +100,13 @@ Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 	* `sudo reflector --latest 200 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist`
 	* (opt.) `rm -f /etc/pacman.d/mirrorlist.pacnew`
 3. Update system / `sudo pacman -Syu`
-4. AUR wrapper (*yay*) / `pacman -S gvfs xdg-user-dirs git`
-	* `xdg-user-dirs-update`
-	* `cd Downloads`
-	* Use *git* to clone and install *yay*
+4. AUR wrapper (*yay*)
+        * `pacman -S git`
+	* `cd /tmp`
+	* `git clone https://aur.archlinux.org/yay.git`
+        * Install *yay* with `makepkg`
 5. X and i3
-	* `pacman -S xorg-server xorg-xinit xorg-xset xorg-xbacklight xautolock i3 dmenu dunst rxvt-unicode lxappearance arc-gtk-theme`
+	* `pacman -S xorg-server xorg-xinit xorg-xset xorg-xbacklight xautolock i3 dunst rxvt-unicode lxappearance`
 	* `sudo cp /etc/X11/xinit/xinitrc ~/.xinitrc`
 	* Add to the end of *xinitrc*
 		```shell
@@ -122,8 +119,9 @@ Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 		fi
 		```
 6. Other stuffs
-	* Needed: `pacman -S alsa-utils ntp compton imagemagick ffmpeg transmission-gtk atool zip unzip feh ranger mpd mpc ncmpcpp`
-	* Nedded (AUR) : `yay -S aic94xx-firmware wd719x-firmware google-chrome spotify`
+	* Needed: `pacman -S alsa-utils compton transmission-gtk feh vifm mpd mpc ncmpcpp mpv firefox gvfs xdg-user-dirs`
+        * `xdg-user-dirs-update`
+	* Nedded (AUR) : `yay -S aic94xx-firmware wd719x-firmware google-chrome`
 	* GPU: `pacman -S nvidia bumblebee mesa nvidia xf86-video-intel lib32-virtualgl lib32-nvidia-utils mesa-demos bbswitch primus lib32-primus`
 		1. Add user to *bumblebee* group : `gpasswd -a ta bumblebee`
 		2. Start and enable *bumblebeed.service*
@@ -132,6 +130,5 @@ Edit */etc/pacman.d/mirrorlist*, move 5-10 closest mirrors to top of file.
 			* `optirun glxspheres64`
 			* `optirun glxspheres32`
 7. Reboot, fixing errors and other broken things
-8. Adjust new system arccording to needs (*i3/i3status, bashrc, mpd/ncmpcpp, transmission, ranger, lxappearance, urxvt (.Xresources)*)
-9. Download, compile, patch and change terminal to [st](https://st.suckless.org/)
-10. Consider using *Tor browser* for bittorrent.
+8. Adjust new system arccording to needs 
+9. Consider using *Tor browser* for bittorrent.
